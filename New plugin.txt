@@ -1,1 +1,1 @@
-OWASP Dependency-Check
+dependency-check-jenkins-plugin
