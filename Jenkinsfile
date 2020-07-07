@@ -78,7 +78,7 @@ podTemplate(label: label, serviceAccount: serviceaccount, containers: [
 			
          stage('Dependency Check') {
 				sh 'mkdir -p build/owasp'
-                dependencyCheck additionalArguments: '--project sockshop-frontend --scan ./ --out build/owasp/dependency-check-report.xml --format XML', odcInstallation: 'DependencyCheck'
+                dependencyCheck additionalArguments: '--project sockshop-frontend --scan ./ --out build/owasp/dependency-check-report.xml --format XML', odcInstallation: 'dependency'
 				dependencyCheckPublisher pattern: 'build/owasp/dependency-check-report.xml'
 				withCredentials([usernamePassword(credentialsId: 'NEXUS', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 sh ("curl --upload-file build/owasp/dependency-check-report.xml -u $USERNAME:$PASSWORD -v http://nexus.ethan.svc.cluster.local:8083/nexus/repository/maven-releases/frontend/")
@@ -132,6 +132,6 @@ podTemplate(label: label, serviceAccount: serviceaccount, containers: [
 			  }
 			}
         }
-        //updateGitlabCommitStatus name: 'build', state: 'success'
+        
 	}
 }
