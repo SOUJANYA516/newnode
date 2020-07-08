@@ -1,1 +1,1 @@
-OWASP Dependency-Check
+OWASP Dependency-Check,gitlab-plugin,selenium

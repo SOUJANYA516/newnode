@@ -1,6 +1,9 @@
 import json  
+import sys
 import pandas as pd  
 from pandas import json_normalize  
+
+file_name = sys.argv[1]
 
 with open('clair.json') as f: 
     d = json.load(f)
@@ -12,7 +15,7 @@ def format():
     nycphil = json_normalize(d['vulnerabilities']) 
     unapprove = d['unapproved']
     count = len(unapprove)
-    f = open('Clair.html','w')
+    f = open(file_name,'w')
     html = """<html><table border="3" align="center">
     <br/><tr><th>Images</th><th>unapproved</th></tr>"""
     for i in range(1):
@@ -26,7 +29,7 @@ def format():
     f.write(html)
     f.close()    
               
-    f = open('Clair.html','a+')
+    f = open(file_name,'a+')
     html = """<html><table border="3" align="center">
     <br/><tr><th>featurename</th><th>featureversion</th><th>vulnerability</th><th>namespace</th><th>description</th><th>link</th><th>severity</th><th>fixedby</th></tr>"""
     for i in range(row):
@@ -43,4 +46,4 @@ def format():
     f.write(html)
     f.close() 
 
-format()        
+format() 
