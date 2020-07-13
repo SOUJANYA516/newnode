@@ -21,4 +21,3 @@ weaveworksdemos/shipping:0.4.8
 weaveworksdemos/user-db:0.4.7
 weaveworksdemos/user:0.4.7
 aiindevops.azurecr.io/py_pandas
-aiindevops.azurecr.io/python_pandas
