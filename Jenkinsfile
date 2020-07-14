@@ -16,7 +16,7 @@ podTemplate(label: label, serviceAccount: serviceaccount, containers: [
 ) {
     node(label) {
         
-        def GIT_URL= 'https://microservices.acndevopsengineering.com/gitlab/root/microservices_nodejs_cartridge.git'
+        def GIT_URL= 'http://gitlab.ethan.svc.cluster.local:8084/gitlab/root/microservices_nodejs_cartridge.git'
 		def GIT_CREDENTIAL_ID ='gitlab'
 		def GIT_BRANCH='master'
 	
