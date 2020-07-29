@@ -4,4 +4,4 @@ aiindevops.azurecr.io/clair-scanner:0.1
 aiindevops.azurecr.io/docker-kubectl:19.03-alpine
 docker:1.13
 node:10-alpine
-aiindevops.azurecr.io/py_pandas
+aiindevops.azurecr.io/py_pandas:3.8.2

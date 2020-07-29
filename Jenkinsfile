@@ -6,17 +6,16 @@ podTemplate(label: label, serviceAccount: serviceaccount, containers: [
 	containerTemplate(name: 'git-secrets', image: 'localhost:32121/root/docker_registry/aiindevops.azurecr.io/git-secrets:0.1', ttyEnabled: true, alwaysPullImage: true, command: 'cat'),
 	containerTemplate(name: 'clair-scanner', image: 'localhost:32121/root/docker_registry/aiindevops.azurecr.io/clair-scanner:0.1', ttyEnabled: true, alwaysPullImage: true, command: 'cat', ports: [portMapping(name: 'clair-scanner', containerPort: '9279')],
 		volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')]),
-    containerTemplate(name: 'py-python', image: 'localhost:32121/root/docker_registry/aiindevops.azurecr.io/py_pandas:latest', ttyEnabled: true, command: 'cat',
+    containerTemplate(name: 'py-python', image: 'localhost:32121/root/docker_registry/aiindevops.azurecr.io/py_pandas:3.8.2', ttyEnabled: true, command: 'cat',
 		volumes: [hostPathVolume(hostPath: '/*.py', mountPath: '/*.py')]),		
-	containerTemplate(name: 'kubectl', image: 'localhost:32121/root/docker_registry/aiindevops.azurecr.io/docker-kubectl:19.03-alpine', ttyEnabled: true, command: 'cat',
-		volumes: [secretVolume(secretName: 'kube-config', mountPath: '/root/.kube')]),
+	containerTemplate(name: 'kubectl', image: 'localhost:32121/root/docker_registry/aiindevops.azurecr.io/docker-kubectl:19.03-alpine', ttyEnabled: true, command: 'cat'),
     containerTemplate(name: 'docker', image: 'localhost:32121/root/docker_registry/docker:1.13', ttyEnabled: true, command: 'cat')],
 		volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')],
 	imagePullSecrets: [ 'gcrcred' ]
 ) {
     node(label) {
         
-        def GIT_URL= 'http://gitlab.ethan.svc.cluster.local:8084/gitlab/root/microservices_nodejs_cartridge.git'
+        def GIT_URL= 'http://gitlab.ethan.svc.cluster.local:8084/gitlab/root/mcd_microservice_nodejs.git'
 		def GIT_CREDENTIAL_ID ='gitlab'
 		def GIT_BRANCH='master'
 	
@@ -36,8 +35,7 @@ podTemplate(label: label, serviceAccount: serviceaccount, containers: [
 		def IMAGE_TAG = "demo-dev-${env.BUILD_NUMBER}"
 		def IMAGE_NAME = "${REGISTRY_NAME}/${REPO_NAME}:${IMAGE_TAG}"
 		def CLAIR_TAG = "clair-${env.BUILD_NUMBER}.html"
-		def DEPENDENCY_PATH= '/home/jenkins/agent/workspace/demo_microservices/sockshop-frontend-nodejs'
-	 
+		try{
 		stage('Git Checkout') {
 			git branch: GIT_BRANCH, url: GIT_URL,credentialsId: GIT_CREDENTIAL_ID
 			def function = load "${WORKSPACE}/JenkinsFunctions_NodeJs.groovy"
@@ -88,7 +86,7 @@ podTemplate(label: label, serviceAccount: serviceaccount, containers: [
  
 		stage('Docker Image Build') {
 			container('docker'){
-				sh ("docker build -t ${IMAGE_NAME} .")
+				sh ("docker build -t ${IMAGE_NAME} --network=host .")
 			}
 		}
 			
@@ -132,6 +130,10 @@ podTemplate(label: label, serviceAccount: serviceaccount, containers: [
 			  }
 			}
         }
+		updateGitlabCommitStatus name: 'build', state: 'success'
+		}catch (Exception err) {
+                updateGitlabCommitStatus name: 'build', state: 'failed'
+               }
         
 	}
 }

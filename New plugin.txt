@@ -1,1 +1,1 @@
-OWASP Dependency-Check,gitlab-plugin,aws-credentials,azure-credentials
+OWASP Dependency-Check,gitlab-plugin
